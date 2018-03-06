@@ -30,7 +30,9 @@ lldcmp <- function(params, beta = NULL,
 }
 
 # Framework for fitting double COM-Poisson models
-cmp <- function(formula, data, start = NULL, sumto = 500L) {
+cmp <- function(formula, data, start = NULL, sumto = 500L,
+                strategy = c("joint", "fixed")) {
+    strategy <- match.arg(strategy)
     #-------------------------------------------
     # Separando as formulas
     if(length(formula[[3]]) > 1L &&
@@ -65,13 +67,26 @@ cmp <- function(formula, data, start = NULL, sumto = 500L) {
     }
     #-------------------------------------------
     # Ajuste do modelo
-    bbmle::parnames(lldcmp) <- names(start)
-    fixed <- list(X = X, Z = Z, y = y, sumto = sumto)
-    fit <- bbmle::mle2(lldcmp,
-                       start = start,
-                       data = fixed,
-                       method = "BFGS",
-                       vecpar = TRUE)
+    if (strategy == "joint") {
+        bbmle::parnames(lldcmp) <- names(start)
+        fixed <- list(X = X, Z = Z, y = y, sumto = sumto)
+        fit <- bbmle::mle2(lldcmp,
+                           start = start,
+                           data = fixed,
+                           method = "BFGS",
+                           vecpar = TRUE)
+    }
+    if (strategy == "fixed") {
+        np <- ncol(Z)
+        bbmle::parnames(lldcmp) <- names(start[1:np])
+        fixed <- list(beta = start[-(1:np)], X = X,
+                      Z = Z, y = y, sumto = sumto)
+        fit <- bbmle::mle2(lldcmp,
+                           start = start[1:np],
+                           data = fixed,
+                           method = "BFGS",
+                           vecpar = TRUE)
+    }
     return(fit)
 }
 
