@@ -142,8 +142,10 @@ myprofile <- function(model, which = 1:length(coef(model))) {
 # Get estimates and standard error for CMP outputs
 get_coef <- function(object,
                      type = c("both", "gama", "beta"),
-                     compact = TRUE,
                      digits = getOption("digits"),
+                     compact = TRUE,
+                     add_letter = TRUE,
+                     math_style = TRUE,
                      keep_rownames = FALSE) {
     type <- match.arg(type)
     x <- bbmle::summary(object)@coef
@@ -155,14 +157,24 @@ get_coef <- function(object,
     )
     est <- x[, "Estimate"]
     std <- x[, "Std. Error"]
+    ind <- abs(est / std) > qnorm(0.975)
     if (compact) {
         fest <- format(round(est, digits))
         fstd <- format(round(std, digits))
-        out <- data.frame(
-            "est (std)" = sprintf("%s (%s)", fest, fstd),
-            check.names = FALSE)
+        if (math_style) fest <- gsub("-", "$-$", fest)
+        res <- sprintf("%s (%s)", fest, fstd)
+        if (add_letter) {
+            tex <- if (!math_style) {
+                       c(" a", "  ")
+                   } else c("$^\\text{a}$",
+                            "\\textcolor{white}{$^\\text{a}$}")
+            let <- ifelse(ind, tex[1], tex[2])
+            res <- paste0(res, let)
+        }
+        out <- data.frame("est (std)" = res, check.names = FALSE)
     } else {
         out <- data.frame(est = est, std = std)
+        if (add_letter) out$sig <- ifelse(ind, "a", "")
     }
     if (keep_rownames) rownames(out) <- rownames(x)
     return(out)
