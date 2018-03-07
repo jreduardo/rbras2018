@@ -17,7 +17,6 @@ lldcmp <- function(params, beta = NULL,
     nu <- exp(Z %*% gama)
     xb <- X %*% beta
     aux <- exp(xb) + (nu - 1) / (2 * nu)
-    aux[aux < 0] <- 1e-10
     tl <- log(aux)
     # Obtem as constantes
     j <- 1:sumto
@@ -70,22 +69,37 @@ cmp <- function(formula, data, start = NULL, sumto = 500L,
     if (strategy == "joint") {
         bbmle::parnames(lldcmp) <- names(start)
         fixed <- list(X = X, Z = Z, y = y, sumto = sumto)
-        fit <- bbmle::mle2(lldcmp,
-                           start = start,
-                           data = fixed,
-                           method = "BFGS",
-                           vecpar = TRUE)
+        fit <- suppressWarnings(
+            bbmle::mle2(lldcmp,
+                        start = start,
+                        data = fixed,
+                        method = "BFGS",
+                        vecpar = TRUE)
+        )
     }
     if (strategy == "fixed") {
         np <- ncol(Z)
         bbmle::parnames(lldcmp) <- names(start[1:np])
         fixed <- list(beta = start[-(1:np)], X = X,
                       Z = Z, y = y, sumto = sumto)
-        fit <- bbmle::mle2(lldcmp,
-                           start = start[1:np],
-                           data = fixed,
-                           method = "BFGS",
-                           vecpar = TRUE)
+        gama_fit <- suppressWarnings(
+            bbmle::mle2(lldcmp,
+                        start = start[1:np],
+                        data = fixed,
+                        method = "BFGS",
+                        vecpar = TRUE)
+        )
+        start <- c(gama_fit@coef, start[-(1:np)])
+        bbmle::parnames(lldcmp) <- names(start)
+        fit <- suppressWarnings(
+            bbmle::mle2(lldcmp,
+                        start = start,
+                        data = fixed[-1],
+                        method = "BFGS",
+                        vecpar = TRUE,
+                        control = list(maxit = 0L))
+        )
+        fit@details$convergence <- 0L
     }
     return(fit)
 }
