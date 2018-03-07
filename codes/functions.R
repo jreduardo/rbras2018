@@ -131,3 +131,49 @@ compute_variance <- function(mu, phi, sumto = 500L, tol = 1e-6) {
     variance <- expec_y2 - mu^2
     return(variance)
 }
+
+# To organize the output of profile log-likelihood
+myprofile <- function(model, which = 1:length(coef(model))) {
+    sel <- c("param", "z", "focal")
+    prof <- profile(model, which = which)
+    as.data.frame(prof)[, sel]
+}
+
+# Get estimates and standard error for CMP outputs
+get_coef <- function(object,
+                     type = c("both", "gama", "beta"),
+                     compact = TRUE,
+                     digits = getOption("digits"),
+                     keep_rownames = FALSE) {
+    type <- match.arg(type)
+    x <- bbmle::summary(object)@coef
+    x <- switch(
+        type,
+        "both" = x,
+        "gama" = x[grepl("gama", rownames(x)), ,drop = FALSE],
+        "beta" = x[grepl("beta", rownames(x)), ,drop = FALSE]
+    )
+    est <- x[, "Estimate"]
+    std <- x[, "Std. Error"]
+    if (compact) {
+        fest <- format(round(est, digits))
+        fstd <- format(round(std, digits))
+        out <- data.frame(
+            "est (std)" = sprintf("%s (%s)", fest, fstd),
+            check.names = FALSE)
+    } else {
+        out <- data.frame(est = est, std = std)
+    }
+    if (keep_rownames) rownames(out) <- rownames(x)
+    return(out)
+}
+
+# Complete estimates tables for multiples nested models
+complete_coef <- function(object) {
+    nmax <- max(vapply(object, nrow, integer(1)))
+    lapply(object, function(x) {
+        if (nrow(x) == nmax) return(x)
+        x[(nrow(x) + 1):nmax, ] <- NA
+        return(x)
+    })
+}
