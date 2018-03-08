@@ -110,7 +110,7 @@ source("codes/lattice-panels.R")
 \begin{center}
   \textbf{
     \Large{Modelos duplos COM-Poisson: modelando média e dispersão
-      para análise de contagens}
+      na análise de contagens}
   } \\[1em]
 \end{center}
 
@@ -139,16 +139,15 @@ $g(\mu_i) = \bm{x}_i^\top \bm{\beta}$, em que $g(\cdot)$ é uma função
 monótona e diferenciável,
 $\bm{x}_i = (x_{i1}, x_{i2}, \ldots x_{ip})^\top$ é o vetor de de
 covariáveis da $i$-ésima observação e $\bm{\beta}$ é o vetor de
-parâmetros desconhecidos a serem estimados.
+parâmetros a serem estimados \citep{Pregibon1984}.
 
-Sob a abordagem paramétrica, obtem-se a relação entre média e variância
+Sob a abordagem paramétrica, obtém-se a relação entre média e variância
 a partir da especificação da distribuição da variável reposta. Por
-exemplo, para as distribuições Poisson, Poisson generealizada e
+exemplo, para as distribuições Poisson, Poisson generalizada e
 Poisson-Tweedie as variâncias são $\mu_i$, $\mu_i(1+\phi\mu_i)^2$ e
-$\mu_i(1+\phi\mu_i^p)$, respectivamente \citep{Zamani2012,
-  Bonat2018}. Outras distribuições como COM-Poisson e
-\textit{Gamma-Count}, também são flexíveis para modelar sub e
-superdispersão, porém não tem forma fechada para a média ou para a
+$\mu_i(1+\phi\mu_i^p)$, respectivamente. Outras distribuições como
+COM-Poisson e \textit{Gamma-Count}, também são flexíveis para modelar
+sub e superdispersão, porém não tem forma fechada para a média ou para a
 variância.
 
 Apesar da flexilidade induzida pela especificação da distribuição, a
@@ -156,7 +155,10 @@ variância da variável resposta depende das covariáveis apenas por meio
 de $\mu_i$. Nesse artigo, propõe-se os modelos duplos COM-Poisson, em
 que modela-se a média e a dispersão em termos de covariáveis. Dessa
 forma, garante-se flexibilidade para modelar, por exemplo, casos em que
-covariáveis levam a um acréscimo da média e decréscimo da dispersão.
+covariáveis levam a um acréscimo da média e decréscimo da
+dispersão. Esse abordagem é similar a proposta de \citet{Smyth1988}, no
+entanto, para a distribuição COM-Poisson as expressões dos modelos de
+média e de dispersão não podem ser obtidos em forma fechada.
 
 \section{Estudo de caso}
 
@@ -168,63 +170,58 @@ industriais, estudos em biometria avaliam o efeitos de poluentes de
 diversas fontes, tais como fertilizantes e pesticidas, sobre o
 crescimento e reprodução de determinada espécie. \citet{Bailer1994}
 avaliou o impacto de diferentes doses de nitrofeno (herbicida usado para
-controle de ervas danilhas) na reprodução da espécie \textit{Cerodaphnia
-  dubia}, um zooplâncton de água doce. Na \Cref{fig:desc-nitrofen}(a),
-são apresentados os dados observados, onde note-se o decréscimo na
-reprodução do zooplâncton para concentrações maiores de nitrofeno. Na
-\Cref{fig:desc-nitrofen}(b) são apresentadas as médias e
-variâncias. Para as três primeiras concentrações experimentadas, há a
-indicação de subdispersão, no entanto, para as duas maiores
-concentrações, a variância amostral é maior que a média amostral,
-sugerindo uma variabilidade extra-Poisson. Esse é um exemplo em que a
-modelagem da variabilidade apenas pela relação média--variância da
-distribuição adotada, pode não ser adequada.
+controle de ervas daninhas) na reprodução de uma espécie de zooplâncton
+de água doce. Na \Cref{fig:desc-nitrofen}(a), são apresentados os dados
+observados, nota-se o decréscimo na reprodução do zooplâncton para
+concentrações maiores de nitrofeno. Na \Cref{fig:desc-nitrofen}(b) são
+apresentadas as médias e variâncias. Para as três primeiras
+concentrações experimentadas, há a indicação de subdispersão, no
+entanto, para as duas maiores concentrações, a variância amostral é
+maior que a respectiva média, sugerindo uma variabilidade
+extra-Poisson. Esse é um exemplo em que a modelagem da variabilidade
+considerando apenas a relação média--variância da distribuição adotada,
+pode não ser adequada.
 
 
 <<desc-nitrofen, fig.width=9, fig.height=4, fig.cap="(a) Número de ovos eclodidos para cada dosagen de nitrofen e (b) dispersão das médias e variâncias amostrais para cada dose. As linhas representam (a) a curva de suavização estimada pelo algoritmo \\textit{lowess} e (b) a reta identidade, representando a equidispersão.">>=
 @
 
-\section{Metodologia}
+\section{Modelos duplos COM-Poisson}
 
-Nessa seção, são apresentadas: a distribuição COM-Poisson e suas
-propriedades; a estrutura proposta para modelagem conjunta da média e
-dispersão, denonimada como modelos duplos COM-Poisson; e os métodos de
-estimação e inferência adotados.
-
-\subsection{Modelos duplos COM-Poisson}
-
-A distribuição COM-Poisson generalização biparamétrica da Poisson, em
-termos da razão de probabilidades sucessivas, que contempla sub e
-superdispersão \citep{Shmueli2005}. A função massa de probabilidade do
-modelo COM-Poisson é dada por
+A distribuição COM-Poisson é uma generalização biparamétrica da Poisson
+que contempla sub e superdispersão \citep{Shmueli2005}. Sua função massa
+de probabilidade é dada por
 \begin{equation}
   \label{eqn:pmf-cmp}
   \Pr(Y=y \mid \lambda, \nu) = \frac{\lambda^y}{(y!)^\nu Z(\lambda, \nu)},
   \qquad y = 0, 1, 2, \ldots
 \end{equation}
-em que $\lambda > 0$, $\nu \geq 0$ e $Z(\lambda, \nu) =
-\sum_{j=0}^\infty \frac{\lambda^j}{(j!)^\nu}$ é uma constante
-de normalização.
+em que $\lambda > 0$, $\nu \geq 0$ e
+$Z(\lambda, \nu) = \sum_{j=0}^\infty\lambda^j/(j!)^\nu$ é uma constante
+de normalização. Esse modelo possui as distribuições Poisson ($\nu = 1$)
+e geométrica ($\nu=0$ e $\lambda < 1$) como casos particulares e permite
+super e subdispersão quando $0 < \nu < 1$ e $\nu > 1$, respectivamente.
 
-Um inconveniente desse modelo é que os momentos média e variância não
-têm formas fechadas. \citet{Shmueli2005} apresentam aproximações
-para a média e para a variância da forma
+A média e a variância para a distribuição COM-Poisson não são obtidos em
+formas fechadas. \citet{Shmueli2005} apresentam aproximações para a
+média e para a variância da forma
 \begin{equation}
   \label{eqn:mean-aprox}
-  E(Y) \approx \lambda^{1/\nu} - \frac{\nu - 1}{2\nu} \qquad
+  \text{E}(Y) \approx \lambda^{1/\nu} - \frac{\nu - 1}{2\nu} \qquad
   \textrm{e} \qquad
-  V(Y) \approx \frac{\lambda^{1/\nu}}{\nu},
+  \text{Var}(Y) \approx \frac{\lambda^{1/\nu}}{\nu},
 \end{equation}
 que são particularmente acuradas para $\nu \leq 1$ ou $\lambda > 10^\nu$
 \citep{Shmueli2005}. \citet{RibeiroJr2018} mostram que a aproximação
-para a média é acurada, justificando sua proposta de reparametrização
-para média do modelo COM-Poisson, $\text{CMP}_\mu(\mu_i, \nu)$, em que
+para a média é satisfatória, justificando sua proposta de
+reparametrização para média do modelo COM-Poisson,
+$\text{CMP}_\mu(\mu_i, \nu)$, em que
 $\mu = \lambda^{1/\nu} - (\nu - 1)/2\nu$.
 
 Para definição dos modelos duplos COM-Poisson, considere um conjunto de
 dados $(y_i, \bm{x}_i, \bm{z}_i)$, $i=1,2,\ldots,n$, em que $y_i$ são
 realizações independentes do modelo COM-Poisson e $\bm{x}_i$ e
-$\bm{z}_i$ são subvetores do vetor de covariáveis conhecidas. Propõe-se
+$\bm{z}_i$ são subvetores do vetor de covariáveis. Propõe-se
 a modelagem conjunta da média e dispersão pela especificação
 $$
   Y_i \sim \text{CMP}_\mu(\mu_i, \nu_i), \quad \text{em que} \quad
@@ -233,6 +230,14 @@ $$
 $$
 ou seja, ambos os parâmetros de média e dispersão são modelados com
 covariáveis.
+
+A estimação do vetor de parâmetros
+$(\bm{\beta}^\top,\, \bm{\gamma}^\top)^\top$ é realizada pelo método de
+máxima verossimilhança, utilizando o algoritmo \texttt{BFGS}
+implementado pelo função \texttt{optim} do software \texttt{R}. Os
+códigos para ajuste e análise dos dados nesse artigo são
+disponibilizados em material suplementar online\footnote{Disponível em
+  \url{http://www.leg.ufpr.br/~eduardojr/papercompanions/rbras2018}}.
 
 \section{Resultados e discussões}
 
@@ -256,12 +261,12 @@ e o preditor cúbico para a média.
 Na \Cref{tab:coef}, são apresentadas estimativas e erros padrões para os
 parâmetros de cada modelo considerado. Note que as estimativas para a
 estrutura da média são bastante similares para as diferentes estruturas
-de disperão. Esse resultado é esperado, uma vez que os parâmetros $\mu$
+de dispersão. Esse resultado é esperado, uma vez que os parâmetros $\mu$
 e $\nu$ se mostram ortogonais no modelo COM-Poisson
 \cite{RibeiroJr2018}.
 
 \begin{table}[ht]
-  \centering
+  \centering \small
   \caption{Estimativas e erros padrões dos parâmetros do modelo duplo
     COM-Poisson ajustados aos dados do estudo sobre o nitrofeno.}
   \label{tab:coef}
@@ -288,7 +293,7 @@ valores de p \Sexpr{summary(m3j)@coef[3,4]} e
 \Sexpr{anova(m2j,m3j)[2,5]}, respectivamente.
 
 \begin{table}[ht]
-  \centering
+  \centering \small
   \caption{Medidas de qualidade de ajuste e testes de razão de
     verossimilhança para os modelos ajustados.}
   \label{tab:anova}
@@ -301,7 +306,7 @@ valores de p \Sexpr{summary(m3j)@coef[3,4]} e
 
 Na \Cref{fig:fit-values}(a) são apresentados os valores ajustados
 $\hat{\nu}_i$ com bandas de confiança de 95\% para os quatro
-preditores. Com excessão do preditor escalar, todos os modelos
+preditores. Com exceção do preditor escalar, todos os modelos
 apresentam uma variação da dispersão extra relação média--variância do
 modelo. Uma constatação desse fato se dá, aproximadamente para
 concentração de nitrofeno de 2$\mu$g$/10^2$litros, em que o o número de
@@ -324,7 +329,7 @@ diferentes níveis de dispersão. Essa classe de modelos permite modelar a
 dispersão por covariáveis. Os parâmetros são estimados pelo método da
 máxima verossimilhança e inferências são realizadas com base nas
 distribuições assintóticas dos estimadores. A metodologia é aplicada
-para análise do número de ovos eclodidos sob dosagens de herbicidade em
+para análise do número de ovos eclodidos sob dosagens de herbicida em
 um estudo de biometria. A proposta apresentou melhorias em termos do
 ajuste quando comparada ao modelo de regressão COM-Poisson
 convencional. As análises sugerem que melhorias no processo de estimação
@@ -332,14 +337,13 @@ podem ser feitas, aproveitando a propriedade de ortogonalidade da
 parametrização utilizada. Para trabalhos futuros, estudos de simulação
 se fazem necessários a fim de avaliar as propriedades dos estimadores e
 a robustez do modelo. Além disso, como melhoria na análise do estudo de
-caso, preditores não linear para a média podem ser utéis a fim de evitar
+caso, preditores não linear para a média podem ser úteis a fim de evitar
 o uso de polinômios cúbicos.
 
 %-------------------------------------------
 % Referências
-\pagebreak
-
 \small
+% \setlength{\bibsep}{2pt}
 \bibliography{rbras2018}
 
 \end{document}
