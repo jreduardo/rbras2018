@@ -121,7 +121,11 @@ panel.cbH <- function(x, y, ly, uy,
                       col.line = plot.line$col,
                       lwd = plot.line$lwd,
                       desloc = NULL,
-                      fill = 1, alpha = 0.1, length = 0.05, ...) {
+                      fill = 1,
+                      alpha = 0.1,
+                      length = 0.05,
+                      lty_bands = NULL,
+                      ...) {
     plot.line <- trellis.par.get("plot.line")
     if (is.null(desloc)) {
         desloc <- rep(0, length(uy))
@@ -137,11 +141,12 @@ panel.cbH <- function(x, y, ly, uy,
     uyo <- uy[or]
     desl <- desloc[subscripts]
     if (cty == "bands") {
+        if(is.null(lty_bands)) lty_bands <- list(...)$lty
         panel.polygon(c(xo, rev(xo)), c(lyo, rev(uyo)), col = fill,
                       alpha = alpha, border = NA)
-        panel.lines(xo, lyo, lty = list(...)$lty, lwd = 0.5,
+        panel.lines(xo, lyo, lty = lty_bands, lwd = 0.5,
                     col = col.line)
-        panel.lines(xo, uyo, lty = list(...)$lty, lwd = 0.5,
+        panel.lines(xo, uyo, lty = lty_bands, lwd = 0.5,
                     col = col.line)
     }
     if (cty == "bars") {
