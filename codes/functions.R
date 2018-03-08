@@ -189,3 +189,27 @@ complete_coef <- function(object) {
         return(x)
     })
 }
+
+# Analysis of deviance table (TRV for nested models)
+get_anova <- function(object, ..., print = TRUE) {
+    if (is.list(object)) {
+        mlist <- object
+    } else {
+        mlist <- c(object, list(...))
+    }
+    n   <- vapply(mlist, function(x) nrow(x@data$X), 0L)
+    nps <- vapply(mlist, function(x) attr(logLik(x), "df"), 0)
+    aic <- vapply(mlist, function(x) AIC(x), 0)
+    dev <- vapply(mlist, function(x) -2*logLik(x), 0)
+    cst <- -diff(dev)
+    pvs <- pchisq(cst, df = diff(nps), lower.tail = FALSE)
+    tab <- data.frame("gl" = n - nps,
+                      "dev" = dev,
+                      "AIC" = aic,
+                      "chisq" = c(NA, cst),
+                      "Pr(>Chisq)" = c(NA, pvs),
+                      check.names = FALSE)
+    rownames(tab) <- names(mlist)
+    if (print) printCoefmat(tab, na.print = "", cs.ind = 1)
+    invisible(tab)
+}
