@@ -95,8 +95,8 @@ names(models_fixed) <- mnames
 
 ## ---- tab-coef
 cname <- c("Parâmetro", mnames)
-nbeta <- sprintf("$\\beta_%s$", 1:4)
-ngama <- sprintf("$\\gamma_%s$", 1:4)
+nbeta <- sprintf("$\\beta_%s$", 0:3)
+ngama <- sprintf("$\\gamma_%s$", 0:3)
 
 tab_coef <- do.call(
     rbind,
@@ -129,5 +129,90 @@ print.xtable(xtable(tab_anova, digits = c(0, 0, 3, 3, 4, 4)),
              include.rownames = TRUE,
              only.contents = TRUE,
              NA.string = "\\multicolumn{1}{c}{$-$}")
+
+
+#-------------------------------------------
+# Fitted values
+
+# ---- fit-values
+get_preds <- function(model, ...) {
+    pred_type <- c("mean", "dispersion")
+    names(pred_type) <- pred_type
+    purrr::map_dfr(pred_type,
+                   predict_cmp,
+                   model = model,
+                   ...,
+                   .id = "prediction")
+}
+
+# Fitted mean (\mu_i) and dispersion (\nu_i) values
+aux <- data.frame(dose = seq(0, 3, length.out = 100))
+orthopoly <- poly(aux$dose, degree = 3)
+colnames(orthopoly) <- paste0("dose", 1:3)
+aux <- cbind(aux, orthopoly)
+
+pred <-
+    models_joint %>%
+    purrr::map_dfr(get_preds, newdata = aux, .id = "model") %>%
+    mutate(model = forcats::fct_inorder(factor(model)),
+           dose1 = NULL,
+           dose2 = NULL,
+           dose3 = NULL)
+
+daaux <- subset(pred, prediction == "dispersion")
+xy1 <- xyplot(fit ~ dose | model,
+              type = "l",
+              layout = c(2, 2),
+              scales = "free",
+              as.table = TRUE,
+              xlab = "Nível de concentração de nitrofeno",
+              ylab = expression(nu),
+              sub = "(a)",
+              ly = daaux$lwr,
+              uy = daaux$upr,
+              cty = "bands",
+              fill = "gray80",
+              alpha = 0.3,
+              lty_bands = 3,
+              auto.key = TRUE,
+              prepanel = prepanel.cbH,
+              panel = function(x, y, ..., subscripts) {
+                  panel.cbH(x, y, ..., subscripts)
+                  panel.segments(min(x), 1, max(x), 1, lty =2)
+              },
+              data = daaux)
+
+# Compute mean and variance by COM-Poisson distribution
+fun <- purrr::possibly(compute_variance, otherwise = NA)
+pred2 <-
+    pred %>%
+    mutate(lwr = NULL, upr = NULL) %>%
+    tidyr::spread(key = prediction, value = fit) %>%
+    mutate(variance = purrr::map2_dbl(mean, log(dispersion), fun)) %>%
+    tidyr::gather(key = moment, value = value, mean:variance)
+
+xy2 <- xyplot(value ~ dose | model,
+              groups = moment,
+              type = "l",
+              layout = c(2, 2),
+              as.table = TRUE,
+              xlab = "Nível de concentração de nitrofeno",
+              ylab = " ",
+              sub = "(b)",
+              auto.key = list(
+                  columns = 2,
+                  points = FALSE,
+                  lines = TRUE,
+                  text = c("Média", "Variância"),
+                  cex = 0.9
+              ),
+              par.settings = list(
+                  superpose.line = list(lwd = 2)
+              ),
+              subset = value > 0L,
+              data = pred2)
+
+print(xy1, split = c(1, 1, 2, 1), more = TRUE)
+print(xy2, split = c(2, 1, 2, 1), more = FALSE)
 
 ## ---- noinclude
