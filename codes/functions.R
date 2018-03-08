@@ -129,10 +129,14 @@ compute_variance <- function(mu, phi, sumto = 500L, tol = 1e-6) {
         pmax <- dcmp(ymax, mu, phi, sumto = sumto)
     }
     yrange <- 1:ymax
-    expec_y2 <- sum(yrange^2 * dcmp(yrange, mu, phi))
+    expec_y2 <- sum(yrange^2 * dcmp(yrange, mu, phi, sumto = sumto))
     variance <- expec_y2 - mu^2
     return(variance)
 }
+compute_variance <- Vectorize(
+    compute_variance,
+    vectorize.args = c("mu", "phi"))
+
 
 # To organize the output of profile log-likelihood
 myprofile <- function(model, which = 1:length(coef(model))) {
