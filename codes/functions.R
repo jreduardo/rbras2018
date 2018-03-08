@@ -68,7 +68,8 @@ cmp <- function(formula, data, start = NULL, sumto = 500L,
     # Ajuste do modelo
     if (strategy == "joint") {
         bbmle::parnames(lldcmp) <- names(start)
-        fixed <- list(X = X, Z = Z, y = y, sumto = sumto)
+        fixed <- list(X = X, Z = Z, y = y, sumto = sumto,
+                      formula_beta = ffx, formula_gama = ffz)
         fit <- suppressWarnings(
             bbmle::mle2(lldcmp,
                         start = start,
@@ -81,7 +82,8 @@ cmp <- function(formula, data, start = NULL, sumto = 500L,
         np <- ncol(Z)
         bbmle::parnames(lldcmp) <- names(start[1:np])
         fixed <- list(beta = start[-(1:np)], X = X,
-                      Z = Z, y = y, sumto = sumto)
+                      Z = Z, y = y, sumto = sumto,
+                      formula_beta = ffx, formula_gama = ffz)
         gama_fit <- suppressWarnings(
             bbmle::mle2(lldcmp,
                         start = start[1:np],
@@ -212,4 +214,53 @@ get_anova <- function(object, ..., print = TRUE) {
     rownames(tab) <- names(mlist)
     if (print) printCoefmat(tab, na.print = "", cs.ind = 1)
     invisible(tab)
+}
+
+# Prediction mean and dispersion for double COM-Poisson models
+predict_cmp <- function(model,
+                        newdata,
+                        predict = c("mean", "dispersion"),
+                        type = c("response", "link"),
+                        interval = c("confidence", "none"),
+                        level = 0.95,
+                        augment_data = TRUE) {
+    type <- match.arg(type)
+    predict <- match.arg(predict)
+    interval <- match.arg(interval)
+    #-------------------------------------------
+    Vcov <- vcov(model)
+    indb <- grep("beta", rownames(Vcov))
+    indg <- grep("gama", rownames(Vcov))
+    #-------------------------------------------
+    Vbeta <- Vcov[indb, indb, drop = FALSE]
+    Vgama <- Vcov[indg, indg, drop = FALSE]
+    Vbega <- Vcov[indb, indg]
+    #-------------------------------------------
+    if (predict == "mean") {
+        Vcond <- Vbeta - tcrossprod(Vbega %*% solve(Vgama), Vbega)
+        formula <- model@data$formula_beta
+        formula[[2]] <- NULL
+        coefs <- model@coef[indb]
+    }
+    if (predict == "dispersion") {
+        Vcond <- Vgama - crossprod(Vbega, solve(Vbeta) %*% Vbega)
+        formula <- model@data$formula_gama
+        coefs <- model@coef[indg]
+    }
+    #-------------------------------------------
+    Mat <- model.matrix(formula, newdata)
+    est <- Mat %*% coefs
+    if (interval == "none") {
+        out <- data.frame("fit" = est)
+    }
+    if (interval == "confidence") {
+        qn <- -qnorm((1 - level[1])/2)
+        std <- sqrt(diag(tcrossprod(Mat %*% Vcond, Mat)))
+        out <- data.frame("fit" = est,
+                          "lwr" = est - qn * std,
+                          "upr" = est + qn * std)
+    }
+    if (type == "response") out <- data.frame(apply(out, 2L, exp))
+    if (augment_data) out <- cbind(newdata, out)
+    return(out)
 }
