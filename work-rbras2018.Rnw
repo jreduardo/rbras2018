@@ -147,16 +147,16 @@ exemplo, para as distribuições Poisson, Poisson generalizada e
 Poisson-Tweedie as variâncias são $\mu_i$, $\mu_i(1+\phi\mu_i)^2$ e
 $\mu_i(1+\phi\mu_i^p)$, respectivamente. Outras distribuições como
 COM-Poisson e \textit{Gamma-Count}, também são flexíveis para modelar
-sub e superdispersão, porém não tem forma fechada para a média ou para a
-variância.
+sub e superdispersão, porém, não têm formas fechadas para a média ou
+para a variância.
 
 Apesar da flexilidade induzida pela especificação da distribuição, a
 variância da variável resposta depende das covariáveis apenas por meio
-de $\mu_i$. Nesse artigo, propõe-se os modelos duplos COM-Poisson, em
-que modela-se a média e a dispersão em termos de covariáveis. Dessa
+de $\mu_i$. Nesse artigo, propõem-se os modelos duplos COM-Poisson, em
+que se modela a média e a dispersão em termos de covariáveis. Dessa
 forma, garante-se flexibilidade para modelar, por exemplo, casos em que
 covariáveis levam a um acréscimo da média e decréscimo da
-dispersão. Esse abordagem é similar a proposta de \citet{Smyth1988}, no
+dispersão. Esse abordagem é similar à proposta de \citet{Smyth1988}, no
 entanto, para a distribuição COM-Poisson as expressões dos modelos de
 média e de dispersão não podem ser obtidos em forma fechada.
 
@@ -166,21 +166,22 @@ média e de dispersão não podem ser obtidos em forma fechada.
 @
 
 Para preservar os recursos de ecossistemas de água sobre os efluentes
-industriais, estudos em biometria avaliam o efeitos de poluentes de
+industriais, estudos em biometria avaliam os efeitos de poluentes de
 diversas fontes, tais como fertilizantes e pesticidas, sobre o
-crescimento e reprodução de determinada espécie. \citet{Bailer1994}
-avaliou o impacto de diferentes doses de nitrofeno (herbicida usado para
-controle de ervas daninhas) na reprodução de uma espécie de zooplâncton
-de água doce. Na \Cref{fig:desc-nitrofen}(a), são apresentados os dados
-observados, nota-se o decréscimo na reprodução do zooplâncton para
-concentrações maiores de nitrofeno. Na \Cref{fig:desc-nitrofen}(b) são
-apresentadas as médias e variâncias. Para as três primeiras
-concentrações experimentadas, há a indicação de subdispersão, no
-entanto, para as duas maiores concentrações, a variância amostral é
-maior que a respectiva média, sugerindo uma variabilidade
-extra-Poisson. Esse é um exemplo em que a modelagem da variabilidade
-considerando apenas a relação média--variância da distribuição adotada,
-pode não ser adequada.
+crescimento e a reprodução de determinada espécie. \citet{Bailer1994}
+avaliaram o impacto de diferentes doses de nitrofeno (herbicida usado
+para controle de ervas daninhas) na reprodução de uma espécie de
+zooplâncton de água doce. Na \Cref{fig:desc-nitrofen}(a), são
+apresentados os dados observados, notando-se o decréscimo na reprodução
+do zooplâncton para concentrações maiores de nitrofeno. Na
+\Cref{fig:desc-nitrofen}(b), tem-se o gráfico de dispersão das médias e
+variâncias, além da reta identidade, representando a equidispersão. Para
+as três primeiras concentrações experimentadas, há a indicação de
+subdispersão, no entanto, para as duas maiores concentrações, a
+variância amostral é maior que a respectiva média, sugerindo uma
+variabilidade extra-Poisson. Esse é um exemplo em que a modelagem da
+variabilidade considerando apenas a relação média--variância da
+distribuição adotada, pode não ser adequada.
 
 
 <<desc-nitrofen, fig.width=9, fig.height=4, fig.cap="(a) Número de ovos eclodidos para cada dosagen de nitrofen e (b) dispersão das médias e variâncias amostrais para cada dose. As linhas representam (a) a curva de suavização estimada pelo algoritmo \\textit{lowess} e (b) a reta identidade, representando a equidispersão.">>=
@@ -242,7 +243,7 @@ disponibilizados em material suplementar online\footnote{Disponível em
 \section{Resultados e discussões}
 
 Para análise da reprodução do zooplâncton sob diferentes concentrações
-de nitrofeno, considera-se os preditores para dispersão
+de nitrofeno, consideram-se os preditores
 \begin{center}
   \begin{tabular}{ll}
     Escalar:    & $\log(\nu_i) = \gamma_0$,\\
@@ -253,7 +254,7 @@ de nitrofeno, considera-se os preditores para dispersão
                   \gamma_2 \texttt{dose}_i^2 + \gamma_3 \texttt{dose}_i^3$,
   \end{tabular}
 \end{center}
-e o preditor cúbico para a média.
+para dispersão e cúbico para a média.
 
 <<fit-models, cache=TRUE>>=
 @
@@ -283,13 +284,13 @@ e $\nu$ se mostram ortogonais no modelo COM-Poisson
   $|$Est$/$EP$|$ $> 1,96$.
 \end{table}
 
-Na \Cref{tab:anova} são apresentadas algumas algumas medidas de
+Na \Cref{tab:anova}, são apresentadas algumas algumas medidas de
 qualidade de ajuste seguidas de testes de razão de verossimilhanças
 entre os modelos considerados. Os resultados indicam que há uma
 importante melhoria no ajuste ao considerar as estruturas linear e
 quadrática para modelagem da dispersão. Para a hipótese $\beta_2=0$, os
 testes assintóticos de Wald e de razão de verossimilhanças apresentaram
-valores de p \Sexpr{summary(m3j)@coef[3,4]} e
+valores de p iguais a \Sexpr{summary(m3j)@coef[3,4]} e
 \Sexpr{anova(m2j,m3j)[2,5]}, respectivamente.
 
 \begin{table}[ht]
@@ -304,7 +305,7 @@ valores de p \Sexpr{summary(m3j)@coef[3,4]} e
   \end{tabular*}
 \end{table}
 
-Na \Cref{fig:fit-values}(a) são apresentados os valores ajustados
+Na \Cref{fig:fit-values}(a), são apresentados os valores ajustados
 $\hat{\nu}_i$ com bandas de confiança de 95\% para os quatro
 preditores. Com exceção do preditor escalar, todos os modelos
 apresentam uma variação da dispersão extra relação média--variância do
@@ -318,27 +319,27 @@ ovos eclodidos passam de superdispersos para equidispersos.
 As correspondentes médias e variâncias obtidas dos modelos ajustados são
 apresentadas na \Cref{fig:fit-values}(b). Note que a ordem do
 polinômio adotado para $\log(\nu_i)$ não representa a ordem da curva
-para a variância da variável resposta. Isso se dá tanto devido a função
-de ligação, quanto a relação média--variância da própria distribuição.
+para a variância da variável resposta. Isso se dá tanto devido à função
+de ligação, quanto à relação média--variância da própria distribuição.
 
 \section{Considerações finais}
 
-Nesse artigo foram propostos os modelos duplos COM-Poisson para
+Nesse artigo, foram propostos os modelos duplos COM-Poisson para
 modelagem conjunta da média e dispersão na análise de contagens com
 diferentes níveis de dispersão. Essa classe de modelos permite modelar a
 dispersão por covariáveis. Os parâmetros são estimados pelo método da
 máxima verossimilhança e inferências são realizadas com base nas
 distribuições assintóticas dos estimadores. A metodologia é aplicada
-para análise do número de ovos eclodidos sob dosagens de herbicida em
-um estudo de biometria. A proposta apresentou melhorias em termos do
-ajuste quando comparada ao modelo de regressão COM-Poisson
-convencional. As análises sugerem que melhorias no processo de estimação
-podem ser feitas, aproveitando a propriedade de ortogonalidade da
-parametrização utilizada. Para trabalhos futuros, estudos de simulação
-se fazem necessários a fim de avaliar as propriedades dos estimadores e
-a robustez do modelo. Além disso, como melhoria na análise do estudo de
-caso, preditores não linear para a média podem ser úteis a fim de evitar
-o uso de polinômios cúbicos.
+para análise do número de ovos eclodidos sob dosagens de herbicida em um
+estudo de biometria. A proposta apresentou melhorias em termos do ajuste
+quando comparada ao modelo de regressão COM-Poisson convencional. As
+análises sugerem que melhorias no processo de estimação podem ser
+feitas, aproveitando a propriedade de ortogonalidade da parametrização
+utilizada. Para trabalhos futuros, estudos de simulação se fazem
+necessários a fim de avaliar as propriedades dos estimadores e a
+robustez do modelo. Além disso, como melhoria na análise do estudo de
+caso, considerar preditores não lineares para a média pode ser útil a
+fim de evitar o uso de polinômios cúbicos.
 
 %-------------------------------------------
 % Referências
