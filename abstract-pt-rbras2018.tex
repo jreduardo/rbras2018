@@ -1,0 +1,103 @@
+\documentclass[12pt, a4paper]{article}
+
+%-----------------------------------------------------------------------
+% Preamble by the organize commitee
+
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{url}
+\usepackage{enumerate}
+\usepackage{amsmath, amsthm, amsfonts, amssymb, amsxtra}
+\usepackage{bm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{$63^{\textrm{a}}$ RBras}
+\rhead{23 a 25 de maio de 2018, Curitiba - PR}
+% \cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\addtolength{\headheight}{12.0pt}
+
+\makeatletter
+\def\@xfootnote[#1]{%
+  \protected@xdef\@thefnmark{#1}%
+  \@footnotemark\@footnotetext}
+\makeatother
+
+\usepackage{hyperref}
+\definecolor{mycol}{rgb}{0.0, 0.0, 0.5}
+\urlstyle{tt}
+\makeatletter
+\hypersetup{
+  pdftitle={\@title},
+  pdfauthor={\@author},
+  colorlinks=true,
+  linkcolor=mycol,
+  citecolor=mycol,
+  filecolor=mycol,
+  urlcolor=mycol,
+  bookmarksdepth=4
+}
+\makeatother
+
+%-----------------------------------------------------------------------
+% Init the document
+
+\begin{document}
+\onehalfspacing
+
+%-------------------------------------------
+% Título
+\begin{center}
+  \textbf{
+    \Large{Modelos duplos COM-Poisson: modelando média e dispersão
+      na análise de contagens}
+  } \\[1em]
+\end{center}
+
+%-------------------------------------------
+% Autores
+\begin{flushright}
+  {\bf Eduardo Elias Ribeiro Junior}
+  \footnote[$\dagger$]{Contato:
+    \href{mailto:jreduardo@usp.br}{\tt jreduardo@usp.br}}
+  \footnote[1]{Departamento de Ciências Exatas (LCE) - ESALQ-USP}
+  \footnote[2]{Laboratório de Estatística e Geoinformação (LEG) -
+    UFPR}\\
+  {\bf Clarice Garcia Borges Demétrio} \footnotemark[1]
+\end{flushright}
+
+\vspace*{0.5cm}
+
+\noindent Para análise de dados em forma de contagens, comumente,
+modela-se a média da variável resposta em termos de covariáveis. A
+relação média--variância é determinada ao especificar a distribuição de
+probabilidades das contagens. Dessa forma, a variância das contagens se
+relaciona com as covariáveis apenas por meio de suas médias. Nesse
+artigo, propõem-se os modelos duplos COM-Poisson, em que adota a
+distribuição COM-Poisson para a média para as contagens e modela-se
+ambos os parâmetros, de média e de dispersão, em termos de
+covariáveis. Essa abordagem garante flexibilidade suficiente para
+identificar covariáveis influentes tanto na média quanto na dispersão
+das contagens em casos de sub, equi e superdispersão. Os modelos
+propostos são ajustados pelo método da máxima verossimilhança e a
+inferência sob os parâmetros é baseada na distribuição assintótica dos
+estimadores de máxima verossimilhança. A metodologia é aplicada para
+análise de um estudo em biometria. Os resultados dos modelos duplos
+COM-Poisson apresentaram melhorias em termos de ajuste e interpretação
+quando comparados aos resultados dos modelos COM-Poisson
+convencionais. As implementações computacionais para ajuste dos modelos
+duplos COM-Poisson são disponibilizadas em material
+suplementar.\\
+
+\noindent{\bf Palavras-chave}:
+{\it Distribuição COM-Poisson, Modelagem da dispersão,
+     Modelos duplos COM-Poisson}.\\
+
+\end{document}

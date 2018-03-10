@@ -1,0 +1,88 @@
+\documentclass[12pt, a4paper]{article}
+
+%-----------------------------------------------------------------------
+% Preamble by the organize commitee
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{url}
+\usepackage{enumerate}
+\usepackage{amsmath, amsthm, amsfonts, amssymb, amsxtra}
+\usepackage{bm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{$63^{\textrm{a}}$ RBras}
+\rhead{May 23 to 25, 2018, Curitiba - PR}
+% \cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\addtolength{\headheight}{12.0pt}
+
+\makeatletter
+\def\@xfootnote[#1]{%
+  \protected@xdef\@thefnmark{#1}%
+  \@footnotemark\@footnotetext}
+\makeatother
+
+\usepackage{hyperref}
+\definecolor{mycol}{rgb}{0.0, 0.0, 0.5}
+\urlstyle{tt}
+\makeatletter
+\hypersetup{
+  pdftitle={\@title},
+  pdfauthor={\@author},
+  colorlinks=true,
+  linkcolor=mycol,
+  citecolor=mycol,
+  filecolor=mycol,
+  urlcolor=mycol,
+  bookmarksdepth=4
+}
+\makeatother
+
+%-----------------------------------------------------------------------
+% Init the document
+
+\begin{document}
+\onehalfspacing
+
+%-------------------------------------------
+% Título
+\begin{center}
+  \textbf{
+    \Large{Double COM-Poisson models: modelling mean and dispersion in
+      the analysis of count data.}
+  } \\[1em]
+\end{center}
+
+%-------------------------------------------
+% Autores
+\begin{flushright}
+  {\bf Eduardo Elias Ribeiro Junior}
+  \footnote[$\dagger$]{Contato:
+    \href{mailto:jreduardo@usp.br}{\tt jreduardo@usp.br}}
+  \footnote[1]{Department of Exact Sciences (LCE) - ESALQ-USP}
+  \footnote[2]{Statistics and Geoinformation Laboratory (LEG) -
+    UFPR}\\
+  {\bf Clarice Garcia Borges Demétrio} \footnotemark[1]
+\end{flushright}
+
+\vspace*{0.5cm}
+
+\noindent In this paper, we propose the double COM-Poisson models where
+the mean and dispersion parameters of the COM-Poisson distribution are
+modeled in terms of covariates. These model are quite flexible and allow
+us to identify significant effects in both mean and dispersion of the
+observed count data.\\
+
+\noindent{\bf Palavras-chave}:
+{\it COM-Poisson distribution, Varying dispersion,
+     Double COM-Poisson models}.\\
+
+\end{document}
