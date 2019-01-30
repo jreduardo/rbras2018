@@ -1,0 +1,535 @@
+\documentclass[11pt]{beamer}
+
+%=======================================================================
+% General packages
+\usepackage[british]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{multicol}
+\usepackage{mathtools} %% Funcionalidades (como \dcases)
+\usepackage{dsfont}    %% Para \mathds{1} Indicadora
+\usepackage{bm}
+
+%=======================================================================
+% For figures
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+
+%% ======================================================================
+%% Fontes
+\usepackage{mathpazo}
+\usepackage{inconsolata}
+\usepackage{verbatim}
+
+\usefonttheme{professionalfonts}
+\usefonttheme{serif}
+
+%=======================================================================
+% For tables
+\usepackage[bottom]{footmisc}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{tabularx}
+\usepackage{makecell}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\DeclareRobustCommand{\rchi}{{\mathpalette\irchi\relax}}
+\newcommand{\irchi}[2]{\raisebox{\depth}{$#1\chi$}}
+\usepackage{float}
+\makeatletter
+\def\@xfootnote[#1]{%
+  \protected@xdef\@thefnmark{#1}%
+  \@footnotemark\@footnotetext}
+\makeatother
+
+%=======================================================================
+% For captions
+\usepackage{caption}
+\captionsetup{
+  justification=raggedright,
+  singlelinecheck=false,
+  font=footnotesize
+}
+
+%% ======================================================================
+%% Cores para links
+\definecolor{url}{HTML}{000080}
+\definecolor{run}{HTML}{4A0082}
+\definecolor{col}{HTML}{6180A6}
+\usepackage{hyperref}
+\hypersetup{colorlinks, allcolors=., urlcolor=url, runcolor=run}
+
+%\setbeamercolor{bibliography entry author}{fg=black}
+%\usepackage[alf]{abntex2cite}
+\usepackage{natbib}
+\bibliographystyle{agsm}
+
+%% ======================================================================
+%% Tema e cores do documento
+\usetheme{CambridgeUS}
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamertemplate{frametitle}{
+  \nointerlineskip
+  \begin{beamercolorbox}[sep=0.3cm, ht=1.8em,
+    wd=\paperwidth]{frametitle}
+    \vbox{}\vskip-2ex%
+    \strut\hspace*{3ex}\Large\bfseries\insertframetitle\strut
+    \vskip-0.8ex%
+  \end{beamercolorbox}
+}
+
+%% Slides em geral
+\setbeamercolor{frametitle}{bg=white, fg=col}
+\setbeamercolor{structure}{fg=col}
+\setbeamercolor{palette primary}{bg=gray!30, fg=col}
+\setbeamercolor{palette tertiary}{bg=col, fg=white}
+\setbeamercolor{footlinecolor}{fg=white,bg=col}
+\setbeamercolor{caption name}{fg=col}
+
+% \setbeamertemplate{frametitle continuation}{[\insertcontinuationcount]}
+\setbeamertemplate{frametitle continuation}{}
+
+%% Slide Inicial
+\setbeamertemplate{title page}[default]
+\setbeamercolor{title}{fg=col}
+\setbeamercolor{author}{fg=black!70}
+\setbeamercolor{institute}{fg=black!70}
+\setbeamercolor{date}{fg=black!70}
+\setbeamerfont{title}{series=\bfseries, size=\Large}
+
+%% ======================================================================
+%% Definição do cabeçalho e rodapé
+\setbeamerfont{headline}{size=\fontsize{5}{5}\selectfont}
+\setbeamertemplate{headline}{\bfseries
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.5\paperwidth, ht=2.2ex, dp=1ex, right,
+      rightskip=1em]{section in head/foot}
+      \hspace*{2ex}\insertsectionhead
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.5\paperwidth, ht=2.2ex, dp=1ex, left,
+      leftskip=1em]{subsection in head/foot}
+      \insertsubsectionhead\hspace*{2ex}
+    \end{beamercolorbox}}
+  \vskip0pt
+}
+
+\setbeamerfont{footline}{size=\fontsize{5}{5}\selectfont}
+\makeatletter
+\setbeamertemplate{footline}{\bfseries
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.3\paperwidth, ht=2.4ex, dp=1ex, right,
+      rightskip=1em]{footlinecolor}
+      \centering \insertshortauthor%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.6\paperwidth, ht=2.4ex, dp=1ex, left,
+      leftskip=1em]{footlinecolor}
+      \hfill\insertshorttitle%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.1\paperwidth, ht=2.4ex, dp=1ex, left,
+      leftskip=1em]{footlinecolor}
+      \centering Slide \insertframenumber
+    \end{beamercolorbox}}
+  \vskip0pt
+}
+\makeatother
+
+%% ======================================================================
+%% Layout do tableofcontents
+\setbeamertemplate{section in toc}{
+  {\color{col} \bfseries\inserttocsectionnumber.}~
+  {\leftskip=0.5em\color{black}\inserttocsection\par}
+}
+
+\setbeamertemplate{subsection in toc}{
+  {\color{col!80}
+  \bfseries\inserttocsectionnumber.\inserttocsubsectionnumber}~
+  \leftskip=2em{\color{black}\inserttocsubsection\par}
+}
+
+%% ======================================================================
+%% Formatando slides para seções e subseções
+\AtBeginSection[]{
+  \begin{frame}[c, allowframebreaks, noframenumbering]
+    \begin{center}
+      \textcolor{col}{\thesection} \\ \vspace{0.3cm}
+      \parbox{0.6\textwidth}{
+        \centering \textcolor{col}{\LARGE \bf \insertsection}}\\
+    \end{center}
+  \end{frame}
+}
+
+\AtBeginSubsection{
+  \begin{frame}[c, allowframebreaks, noframenumbering]
+    \begin{center}
+      \textcolor{col}{\thesection.\thesubsection} \\ \vspace{0.3cm}
+      \parbox{0.6\textwidth}{
+        \centering \textcolor{col!80}{\large \insertsection}\\
+        \centering \textcolor{col}{\Large \bf \insertsubsection}}\\
+    \end{center}
+  \end{frame}
+}
+
+%% ======================================================================
+%% Metadados não disponíveis no YAML com o atual default.tex template
+
+\title[Double COM-Poisson Regression Models]{
+  Double COM-Poisson models: modelling mean and dispersion in the
+  analysis of count data.}
+
+\author[Ribeiro Jr, E.E. \& Demétrio, C.G.B.]{
+  Eduardo Elias Ribeiro Junior \inst{1} \inst{2} \\
+  Clarice Garcia Borges Demétrio \inst{2}
+}
+
+\institute{
+  \inst{1} Statistics and Geoinformation Laboratory (LEG-UFPR) \\
+  \inst{2} Department of Exact Sciences (ESALQ-USP)
+}
+
+\date{\small \today \\[0.2cm]
+  \url{jreduardo@usp.br} | \url{edujrrib@gmail.com}}
+
+<<read, include=FALSE>>=
+knitr::read_chunk("slides.R")
+@
+<<setup, include=FALSE>>=
+@
+
+\begin{document}
+
+\begin{frame}[plain, noframenumbering]
+  \titlepage
+\end{frame}
+
+\begin{frame}[noframenumbering]{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{Standard regression models}
+
+\textbf{Generalized Linear Models} (GLM) \citep{Nelder1972}:\\[0.1cm]
+
+Let $(y_i, \bm{x}_i)$ a cross-section data set where $y_i's$ are iid
+realizations of $Y_i$ according to the exponential family (\text{EF})
+distribution. The GLM is specified as follow
+$$
+  \begin{gathered}
+    Y_i \sim \text{EF}(\mu_i, \phi)\\
+    g(\mu_i) = \bm{x}_i^\top \bm{\beta}
+  \end{gathered} \quad \Longrightarrow \quad
+  \begin{aligned}
+    &\text{E}(Y_i)=\mu_i\\
+    &\text{Var}(Y_i)=\phi V(\mu_i).
+  \end{aligned}
+$$
+\vspace{0.4cm}
+
+\textbf{Main limitations}
+\begin{itemize}
+    \item The exponential family is often restrictive (variance
+      function);
+    \item The only choice for count data analysis is the Poisson
+      distribution; 
+    \item Only the mean parameter is allowed to depend on covariates.  
+\end{itemize}
+\end{frame}
+
+\subsection{Motivating data set}
+
+\begin{frame}{Assessing toxicity of nitrofen in aquatic systems}
+\small
+
+<<load-data>>=
+@
+
+\textbf{Implication in Biology}
+\begin{itemize}
+    \item Nitrofen is a herbicide that was used extensively for the
+      control of broad-leaved and grass weeds in cereals and rice;
+    \item It is also acutely toxic and reproductively toxic to
+      cladoceran zooplankton;
+    \item Nitrofen is no longer in commercial use in the U.S. 
+\end{itemize}
+\vspace{0.4cm}
+
+\textbf{Experimental study}
+\begin{itemize}
+    \item Assess the reproductive toxicity on a species of zooplankton
+      (\textit{Ceriodaphnia dubia});
+    \item Fifty animals were randomized into batches of ten;
+    \item Each batch was put in a solution with a concentration level
+      of nitrofen;
+    \item The number of live offspring was recorded.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Descriptive analysis}
+
+<<desc-nitrofen, fig.width=8, fig.height=3.5, fig.cap="(a) Number of live offsprings observed for each nitrofen concentration level and (b) scatterplot of the sample means against sample variances.">>=
+@
+
+\end{frame}
+
+\section{Double COM-Poisson models}
+
+\begin{frame}{COM-Poisson distribution}
+
+  \begin{itemize}
+  \itemsep12pt
+  \item Probability mass function \cite{Shmueli2005} takes the form \\
+    \begin{equation*} \small
+    \Pr(Y=y \mid \lambda, \nu) = \frac{\lambda^y}{(y!)^\nu Z(\lambda, \nu)}\,,
+    \qquad Z(\lambda, \nu) = \sum_{j=0}^\infty \frac{\lambda^j}{(j!)^\nu}\,,
+  \end{equation*}
+    where $\lambda > 0$ and $\nu \geq 0$.
+  \item Moments are not available in closed form;
+  \item Expectation and variance can be approximated by
+    \begin{equation*}
+      \label{eqn:mean-aprox}
+      \text{E}(Y) \approx \lambda^{1/\nu} - \frac{\nu - 1}{2\nu} \qquad
+      \textrm{and} \qquad
+      \text{Var}(Y) \approx \frac{\lambda^{1/\nu}}{\nu}.
+    \end{equation*}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Reparametrized COM-Poisson}
+
+Following \cite{RibeiroJr2018}, we use the mean-parametrized
+COM-Poisson, introducing the new parameter $\mu$ by means of
+the approximation,
+$$
+\mu = \lambda^{1/\nu} - \frac{\nu - 1}{2\nu}
+      \quad \Rightarrow \quad
+      \lambda = \left (\mu +
+        \frac{(\nu - 1)}{2\nu} \right )^\nu.
+$$
+
+\textbf{Model parameters:}
+\begin{itemize}
+    \item $\mu \in \mathbb{R}_+$, the mean parameter;
+    \item $\nu \in \mathbb{R}_+$, the dispersion parameter\\
+    ($\nu<1 \implies$ over- and $\nu>1 \implies$ underdispersion).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Orthogonality property}
+
+\vspace{-0.3cm}
+<<results="asis", fig.cap="Deviance surface contour plots under original and proposed parametrization for four simulated data sets. $\\phi=\\log(\\nu)$.">>=
+knitr::include_graphics("images/ortho-surf")
+@
+
+\end{frame}
+
+\begin{frame}{Regression models for mean and dispersion}
+
+\textbf{Double COM-Poisson regression models (DCMP)}\\[0.1cm]
+
+Let $(y_i, \bm{x}_i, \bm{z}_i)$ a data set where $y_i's$ are iid
+realizations of $Y_i$ according to the COM-Poisson distribution
+distribution and $\bm{x}_i$ and $\bm{z}_i$ are sub-vectors of the
+covariates vector. The DCMP is specified as follow
+$$
+  Y_i \sim \text{CMP}_\mu(\mu_i, \nu_i), \quad \text{where} \quad
+  g(\mu_i) = \bm{x}_i^\top \bm{\beta} \quad \text{and} \quad
+  g(\nu_i) = \bm{z}_i^\top \bm{\gamma}.
+$$
+\vspace{-0.1cm}
+
+\textbf{Log-likelihood function}\\[-0.4cm]
+$$
+\ell(\bm{\beta}, \bm{\gamma} ; \bm{y}) = \sum_{i=1}^{n} \left \{
+  \nu_i\log \left ( \mu_i + \frac{\nu_i-1}{2\nu_i}\right ) - 
+  \nu_i \log(y_i) - \log[Z(\mu_i, \nu_i)],
+\right \}
+$$
+where $\mu_i = g^{-1}(\bm{x}_i^\top \bm{\beta})$ and 
+$\nu_i = g^{-1}(\bm{z}_i^\top \bm{\gamma})$
+\end{frame}
+
+\begin{frame}{Estimation and inference}
+
+\begin{itemize}
+  \item Parameters estimates are obtained by numerical maximization
+    of the log-likelihood function (by BFGS algorithm)
+  \item Standard errors for regression coefficients (for mean and 
+    dispersion) are obtained based on the observed information matrix\\
+    {\small $\bm{V}_{\beta \mid \gamma} = \bm{V}_{\beta} - 
+     (\bm{V}_{\beta, \gamma} \bm{V}_{\gamma}^{-1})^\top 
+     \bm{V}_{\beta, \gamma}$ and 
+    $\bm{V}_{\gamma \mid \beta} = \bm{V}_{\gamma} - 
+     (\bm{V}_{\gamma, \beta} \bm{V}_{\beta}^{-1})^\top 
+     \bm{V}_{\gamma, \beta}$}.
+\end{itemize}
+\vspace{0.5cm}
+
+Strategies
+\begin{itemize}
+  \item \textbf{Joint:} Estimate 
+  $(\hat{\bm{\beta}}^\top, \hat{\bm{\gamma}}^\top)^\top$ using the
+  complete log-likelihood function;
+  \item \textbf{Fixed:} Set the $\hat{\bm{\beta}}$ in the Poisson MLE, 
+  estimate $\bm{\gamma}$ (with fixed $\bm{\beta}$) and then estimate
+  the Hessian matrix for 
+  $(\hat{\bm{\beta}}^\top, \hat{\bm{\gamma}}^\top)^\top$.  
+\end{itemize}
+\end{frame}
+
+\section{Data analysis}
+
+\begin{frame}{Model specification}
+<<fit-models>>=
+@
+
+\begin{center}
+  \begin{tabular}{ll}
+  \textbf{For mean:} & \\
+    \qquad Cubic: & $\log(\mu_i) = \beta_0 + \beta_1 \texttt{dose}_i +
+                  \beta_2 \texttt{dose}_i^2 + \beta_3 \texttt{dose}_i^3$\\[0.3cm]
+  \textbf{For dispersion:} & \\
+    \qquad Constant:  & $\log(\nu_i) = \gamma_0$,\\
+    \qquad Linear:    & $\log(\nu_i) = \gamma_0 + \gamma_1 \texttt{dose}_i$,\\
+    \qquad Quadratic: & $\log(\nu_i) = \gamma_0 + \gamma_1 \texttt{dose}_i +
+                  \gamma_2 \texttt{dose}_i^2$ e\\
+    \qquad Cubic:     & $\log(\nu_i) = \gamma_0 + \gamma_1 \texttt{dose}_i +
+                  \gamma_2 \texttt{dose}_i^2 + \gamma_3 \texttt{dose}_i^3$.
+  \end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{}
+\vspace{-0.3cm}
+
+\begin{table}[ht]
+  \centering \scriptsize
+  \caption{Estimates and standard errors.}
+  \label{tab:coef}\vspace{-0.2cm}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}crrrr}
+    \toprule
+    & \multicolumn{4}{c}{Estimate (Erro Padrão)} \\
+    \cmidrule(lr){2-5}
+    <<tab-coef, results="asis">>=
+    @
+    \bottomrule
+  \end{tabular*}
+  \\ \vspace{0.2cm}
+  \tiny \raggedright Est (EP)$^\text{a}$ indicates
+  $|$Est$/$EP$|$ $> 1,96$.
+\end{table}
+\vspace{-0.5cm}
+
+\begin{table}[ht]
+  \centering \scriptsize
+  \caption{Model fit measures and comparisons.}
+  \label{tab:anova}\vspace{-0.2cm}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccrl}
+    \toprule
+    <<tab-anova, results="asis">>=
+    @
+  \end{tabular*}
+\end{table}
+\end{frame}
+
+\begin{frame}{Fitted mean and dispersion values}
+
+<<fit-values, cache=TRUE, fig.width=8, fig.height=4, fig.cap="(a) Fitted values and confidence bands of 95\\% for de dispersion and (b) mean and variances obtained from the fitted model.">>=
+@
+
+\end{frame}
+
+\begin{frame}{Comparison of the strategies for fitting}
+\vspace{-0.2cm}
+<<fit-strategies>>=
+@
+
+<<compare-strategies, out.width="0.8\\textwidth", fig.width=7, fig.height=5, fig.cap="Comparison of (a) maximized likelihoods, estimates and standard errors and (b) computational times.">>=
+@
+
+\end{frame}
+
+\section{Final remarks}
+
+\begin{frame}{Concluding remarks}
+
+  \textbf{Summary}
+  \begin{itemize}
+  \item We show how to allow mean and dispersion parameters to depend
+    on covariates in the COM-Poisson regression model;;
+  \item Estimation and inference can be done based on the likelihood
+    paradigm;
+  \item Using the orthogonality property in the fixed strategy for
+    fitting is faster. 
+  \end{itemize}
+  \vspace{0.5cm}
+  \textbf{Future work}
+  \begin{itemize}
+    \item Perform a simulation study to evaluate estimators properties;
+    \item Compare the results with others approaches, DGLM's 
+      \citep{Lee2006} and GAMLSS \citep{Rigby2005}.
+  \end{itemize}
+\end{frame}
+
+\section*{Notes}
+
+\begin{frame}
+\small
+\begin{itemize}
+  \item \begin{columns}[c]
+      \column{.1\linewidth}
+      \begin{flushright}
+        \includegraphics[height=0.9cm,valign=c]{./images/researchgate-logo}
+      \end{flushright}
+      \column{.8\linewidth}
+      \hspace*{-0.7cm} Extended abstract is available on ResearchGate
+      (in portuguese)\\
+      \hspace*{-0.7cm} \url{https://www.researchgate.net/publication/316880329}
+    \end{columns}
+  \item \begin{columns}[c]
+      \column{.1\linewidth}
+      \begin{flushright}
+        \includegraphics[height=0.9cm,valign=c]{./images/github-logo}
+      \end{flushright}
+      \column{.8\linewidth}
+      \hspace*{-0.7cm} All codes (in R) and source files are available
+      on GitHub\\
+      \hspace*{-0.7cm} \url{https://github.com/jreduardo/rbras2018}
+    \end{columns}
+\end{itemize}
+
+\vspace{0.5cm}
+
+{\bf Acknowledgments}
+
+\begin{itemize}
+    \item \begin{columns}[c]
+      \column{.1\linewidth}
+      \begin{flushright}
+        \includegraphics[height=0.9cm,valign=c]{./images/cnpq-logo}
+      \end{flushright}
+      \column{.8\linewidth} \vspace{-0.3cm}
+      \hspace*{-0.7cm}\begin{minipage}[c]{\textwidth}
+       National Council for Scientific and Technological Development
+       (CNPq), for their support.\\
+      \end{minipage}
+    \end{columns}
+\end{itemize}
+
+\end{frame}
+
+
+\section*{Bibliography}
+\begin{frame}[allowframebreaks, t]{References}
+  \footnotesize
+  \vspace*{-0.5cm}
+  \bibliography{../rbras2018.bib}
+\end{frame}
+
+\end{document}
